@@ -1,0 +1,118 @@
+###get all articles
+GET http://localhost:6000/user-api/users
+
+### USER REGISTER
+POST http://localhost:6000/user-api/users
+Content-Type: application/json
+
+{
+    "firstName":"cherry",
+    "lastName":"V",
+    "email":"chrry@gmail.com",
+    "password":"cherry",
+    "ProfileImageUrl":"http://fyghjl.com"
+}
+
+### USER LOGIN
+POST http://localhost:6000/common-api/login
+Content-Type: application/json
+
+{
+  "email": "23eg112d30@anuarg.edu.in",
+  "password": "abcdefg"
+  //"role":"USER"
+}
+
+### AUTHOR REGISTER
+POST http://localhost:6000/author-api/users
+Content-Type: application/json
+
+{
+    "firstName":"Raji",
+    "lastName":"AUTHOR",
+    "email":"rajitha@gmail.com",
+    "password":"rajitha",
+    "ProfileImageUrl":"http://rajitha.com"
+}
+
+### AUTHOR LOGIN
+POST http://localhost:6000/common-api/login
+Content-Type: application/json
+
+{
+  "email": "nikitha@gmail.com",
+  "password": "abcdefgyg",
+  "role":"AUTHOR"
+}
+### CREATE ARTICLE(AUTHOR)
+POST http://localhost:6000/author-api/articles
+Content-Type: application/json
+
+{
+    "author":"6989743ff50d654fd677531c",
+    "title":"test1 article",
+    "category":"coding",
+    "content":"python is programming language"
+}
+
+### READ ARTICLES OF AUTHOR BY ID
+GET http://localhost:6000/author-api/articles/6989743ff50d654fd677531c
+
+### UPDATE ARTICLE
+PUT http://localhost:6000/author-api/articles
+Content-Type: application/json
+
+{
+    "author":"6989743ff50d654fd677531c",
+    "articleId":"fggjh",
+    "title":"test1 article",
+    "category":"coding",
+    "content":"python is programming language"
+}
+
+###soft delete of article by id
+PUT http://localhost:6000/author-api/articles/delete/698981cf299803f9a3a6d31c
+
+
+###USER LOGIN
+POST http://localhost:6000/common-api/login
+Content-Type: application/json
+
+{
+  "email": "23eg112d30@anuarg.edu.in",
+  "password": "abcdefg"
+  //"role":"USER"
+}
+###user logout
+GET http://localhost:6000/common-api/logout
+
+
+###test req
+GET http://localhost:6000/test
+
+###BLOCK USERS
+PUT http://localhost:6000/admin-api/blockUsers/69896d6ca2043c857ae2ccf5
+
+
+###UNUnblockUsersBLOCK USERS
+PUT http://localhost:6000/admin-api/UnblockUsers/69896d6ca2043c857ae2ccf5
+
+###
+PUT http://localhost:6000/common-api/passwordChange
+Content-Type: application/json
+
+{
+    "email":"23eg112d30@anuarg.edu.in",
+    "current_password":"Nishitha",
+    "new_password":"Nishitha.."
+}
+
+###add commment to an article
+PUT http://localhost:6000/user-api/articles
+Content-Type: application/json
+
+{
+   "user":"69896d6ca2043c857ae2ccf5",
+   "articleid":"69897632a7fe3eaad4a91b70",
+   "comment":"good article"
+}
