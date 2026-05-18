@@ -15,12 +15,18 @@ import {
 } from "../styles/common";
 
 function EditArticle() {
+
   const location = useLocation();
+
   const navigate = useNavigate();
+
   const { id } = useParams();
 
   const [article, setArticle] = useState(location.state || null);
+
   const [loading, setLoading] = useState(true);
+
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
 
   const {
     register,
@@ -31,18 +37,26 @@ function EditArticle() {
 
   // Load article
   useEffect(() => {
+
     const loadArticle = async () => {
+
       try {
+
         if (article) {
+
           setValue("title", article.title);
+
           setValue("category", article.category);
+
           setValue("content", article.content);
+
           setLoading(false);
+
           return;
         }
 
         const res = await axios.get(
-          `https://capstone-project-blog-app-46tv.onrender.com/author-api/articles/${id}`,
+          `${BACKEND_URL}/author-api/articles/${id}`,
           { withCredentials: true }
         );
 
@@ -55,31 +69,43 @@ function EditArticle() {
         setArticle(fetchedArticle);
 
         setValue("title", fetchedArticle.title);
+
         setValue("category", fetchedArticle.category);
+
         setValue("content", fetchedArticle.content);
+
       } catch (err) {
+
         console.error(err);
+
         toast.error("Could not load article");
+
       } finally {
+
         setLoading(false);
       }
     };
 
     loadArticle();
+
   }, [article, id, setValue]);
 
   // Update article
   const updateArticle = async (data) => {
+
     try {
+
       if (!article && !id) {
+
         toast.error("Article not available");
+
         return;
       }
 
       const articleId = article?._id || id;
 
       const res = await axios.put(
-        "https://capstone-project-blog-app-46tv.onrender.com/author-api/articles",
+        `${BACKEND_URL}/author-api/articles`,
         { ...data, articleId },
         { withCredentials: true }
       );
@@ -97,8 +123,11 @@ function EditArticle() {
       navigate(`/article/${updatedArticle._id}`, {
         state: updatedArticle,
       });
+
     } catch (err) {
+
       console.error(err);
+
       toast.error(
         err.response?.data?.message || err.message || "Update failed"
       );
@@ -106,16 +135,27 @@ function EditArticle() {
   };
 
   return (
+
     <div className={`${formCard} mt-10`}>
-      <h2 className={formTitle}>Edit Article</h2>
+
+      <h2 className={formTitle}>
+        Edit Article
+      </h2>
 
       {loading ? (
+
         <p>Loading article...</p>
+
       ) : (
+
         <form onSubmit={handleSubmit(updateArticle)}>
+
           {/* Title */}
           <div className={formGroup}>
-            <label className={labelClass}>Title</label>
+
+            <label className={labelClass}>
+              Title
+            </label>
 
             <input
               className={inputClass}
@@ -123,33 +163,61 @@ function EditArticle() {
             />
 
             {errors.title && (
-              <p className={errorClass}>{errors.title.message}</p>
+              <p className={errorClass}>
+                {errors.title.message}
+              </p>
             )}
+
           </div>
 
           {/* Category */}
           <div className={formGroup}>
-            <label className={labelClass}>Category</label>
+
+            <label className={labelClass}>
+              Category
+            </label>
 
             <select
               className={inputClass}
               {...register("category", { required: "Category required" })}
             >
-              <option value="">Select category</option>
-              <option value="technology">Technology</option>
-              <option value="programming">Programming</option>
-              <option value="ai">AI</option>
-              <option value="web-development">Web Development</option>
+
+              <option value="">
+                Select category
+              </option>
+
+              <option value="technology">
+                Technology
+              </option>
+
+              <option value="programming">
+                Programming
+              </option>
+
+              <option value="ai">
+                AI
+              </option>
+
+              <option value="web-development">
+                Web Development
+              </option>
+
             </select>
 
             {errors.category && (
-              <p className={errorClass}>{errors.category.message}</p>
+              <p className={errorClass}>
+                {errors.category.message}
+              </p>
             )}
+
           </div>
 
           {/* Content */}
           <div className={formGroup}>
-            <label className={labelClass}>Content</label>
+
+            <label className={labelClass}>
+              Content
+            </label>
 
             <textarea
               rows="14"
@@ -158,15 +226,23 @@ function EditArticle() {
             />
 
             {errors.content && (
-              <p className={errorClass}>{errors.content.message}</p>
+              <p className={errorClass}>
+                {errors.content.message}
+              </p>
             )}
+
           </div>
 
-          <button className={submitBtn} disabled={loading || !article}>
+          <button
+            className={submitBtn}
+            disabled={loading || !article}
+          >
             {loading ? "Loading..." : "Update Article"}
           </button>
+
         </form>
       )}
+      
     </div>
   );
 }

@@ -7,9 +7,11 @@ function AddArticle() {
   const { register, handleSubmit, formState:{errors} } = useForm();
   const navigate = useNavigate();
 
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
+
   const onAddArticle = async (data) => {
     try {
-      const res = await axios.post("https://capstone-project-blog-app-46tv.onrender.com/author-api/articles", data, { withCredentials: true });
+      const res = await axios.post(`${BACKEND_URL}/author-api/articles`, data, { withCredentials: true });
       toast.success("Article published successfully!");
       navigate("/author-dashboard");
     } catch (err) {

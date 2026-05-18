@@ -9,10 +9,14 @@ function Register() {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const [loading, setLoading] = useState(false)
+
   const [error, setError] = useState(null)
+
   const [preview, setPreview] = useState(null)
 
   const navigate = useNavigate()
+
+  const BACKEND_URL = import.meta.env.VITE_API_URL
 
   const onRegister = async (newUser) => {
 
@@ -33,7 +37,7 @@ function Register() {
       if (newUser.role === "user") {
 
         let resObj = await axios.post(
-          "https://capstone-project-blog-app-46tv.onrender.com/user-api/users",
+          `${BACKEND_URL}/user-api/users`,
           formData,
           { withCredentials: true }
         )
@@ -46,7 +50,7 @@ function Register() {
       if (newUser.role === "author") {
 
         let resObj = await axios.post(
-          "https://capstone-project-blog-app-46tv.onrender.com/author-api/users",
+          `${BACKEND_URL}/author-api/users`,
           formData,
           { withCredentials: true }
         )
@@ -57,18 +61,22 @@ function Register() {
       }
 
     } catch (err) {
+
       setError(err)
-    }
-    finally {
+
+    } finally {
+
       setLoading(false)
     }
   };
 
   if (loading === true) {
+
     return <p className={loadingClass}></p>
   }
 
   if (error) {
+
     return <p className={errorClass}>{error.message}</p>
   }
 
@@ -92,27 +100,35 @@ function Register() {
         <div className="flex gap-8 mb-5 text-white">
 
           <label className="flex items-center gap-2">
+
             <input
               type="radio"
               value="user"
               {...register("role", { required: true })}
             />
+
             User
+
           </label>
 
           <label className="flex items-center gap-2">
+
             <input
               type="radio"
               value="author"
               {...register("role", { required: true })}
             />
+
             Author
+
           </label>
 
         </div>
 
         {errors.role && (
-          <p className="text-red-200 mb-2">Role required</p>
+          <p className="text-red-200 mb-2">
+            Role required
+          </p>
         )}
 
         <input
@@ -123,7 +139,9 @@ function Register() {
         />
 
         {errors.firstName && (
-          <p className="text-red-200 mb-2">First name required</p>
+          <p className="text-red-200 mb-2">
+            First name required
+          </p>
         )}
 
         <input
@@ -134,7 +152,9 @@ function Register() {
         />
 
         {errors.lastName && (
-          <p className="text-red-200 mb-2">Last name required</p>
+          <p className="text-red-200 mb-2">
+            Last name required
+          </p>
         )}
 
         <input
@@ -145,7 +165,9 @@ function Register() {
         />
 
         {errors.email && (
-          <p className="text-red-200 mb-2">Email required</p>
+          <p className="text-red-200 mb-2">
+            Email required
+          </p>
         )}
 
         <input
@@ -177,12 +199,16 @@ function Register() {
             if (file) {
 
               if (!["image/jpeg", "image/png"].includes(file.type)) {
+
                 setError("Only JPG or PNG allowed");
+
                 return;
               }
 
               if (file.size > 2 * 1024 * 1024) {
+
                 setError("File size must be less than 2MB");
+
                 return;
               }
 

@@ -22,6 +22,8 @@ function ArticlePage() {
 
   const [comment, setComment] = useState("");
 
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
+
   // Fetch article
   useEffect(() => {
 
@@ -34,7 +36,7 @@ function ArticlePage() {
       try {
 
         const res = await axios.get(
-          `https://capstone-project-blog-app-46tv.onrender.com/author-api/articles/${id}`,
+          `${BACKEND_URL}/author-api/articles/${id}`,
           { withCredentials: true }
         );
 
@@ -65,7 +67,7 @@ function ArticlePage() {
       }
 
       const res = await axios.post(
-        `https://capstone-project-blog-app-46tv.onrender.com/author-api/articles/${id}/comments`,
+        `${BACKEND_URL}/author-api/articles/${id}/comments`,
         {
           comment,
           userId: currentUser?._id,
@@ -135,7 +137,7 @@ function ArticlePage() {
     try {
 
       await axios.patch(
-        `https://capstone-project-blog-app-46tv.onrender.com/author-api/articles/${id}/status`,
+        `${BACKEND_URL}/author-api/articles/${id}/status`,
         { isArticleActive: newStatus },
         { withCredentials: true }
       );

@@ -15,6 +15,8 @@ function AuthorArticles() {
 
   const [error, setError] = useState(null);
 
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
 
     if (!user) return;
@@ -26,7 +28,7 @@ function AuthorArticles() {
       try {
 
         const res = await axios.get(
-          `https://capstone-project-blog-app-46tv.onrender.com/author-api/articles/${user._id}`,
+          `${BACKEND_URL}/author-api/articles/${user._id}`,
           { withCredentials: true }
         );
 
@@ -69,7 +71,7 @@ function AuthorArticles() {
     try {
 
       await axios.patch(
-        `https://capstone-project-blog-app-46tv.onrender.com/author-api/articles/${articleId}/status`,
+        `${BACKEND_URL}/author-api/articles/${articleId}/status`,
         { isArticleActive: false },
         { withCredentials: true }
       );

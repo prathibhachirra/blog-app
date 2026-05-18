@@ -9,7 +9,7 @@ import AdminDashboard from "./components/AdminDashboard"
 import Unauthorized from './components/Unauthorized'
 import ArticlePage from './components/ArticlePage'
 import EditArticleForm from './components/EditArticleForm'
-import {createBrowserRouter,RouterProvider} from 'react-router'
+import {createBrowserRouter,RouterProvider,Navigate} from 'react-router'
 import ProtectedRoute from './components/ProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import {Toaster} from 'react-hot-toast'
@@ -23,16 +23,20 @@ function App() {
       errorElement:<ErrorBoundary/>,
       children:[
         {
+          index:true,
+          element:<Navigate to="/home"/>
+        },
+        {
           path:"home",
           element:<Home/>,
         },
         {
-      path:"register",
-      element:<Register/>,
+          path:"register",
+          element:<Register/>,
         },
         {
-        path:"login",
-        element:<Login/>,
+          path:"login",
+          element:<Login/>,
         },
         {
           path:"user-dashboard",
@@ -66,9 +70,9 @@ function App() {
         {
           path:"article/:id/edit",
           element:
-            <ProtectedRoute allowedRoles={["AUTHOR"]}>
-              <EditArticleForm />
-            </ProtectedRoute>
+          <ProtectedRoute allowedRoles={["AUTHOR"]}>
+            <EditArticleForm />
+          </ProtectedRoute>
         },
         {
           path:"unauthorized",
@@ -77,6 +81,7 @@ function App() {
       ]
     }
   ])
+
   return (
     <div>
       <Toaster position='top-center' reverseOrder={false}/>
