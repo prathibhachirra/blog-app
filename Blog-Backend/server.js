@@ -15,7 +15,7 @@ const app=exp()  //exported by express module
 const PORT=process.env.PORT||5000
 //use cors middleware
 app.use(cors({
-  origin: true,
+  origin: "https://capstone-project-seven-sage.vercel.app",
   credentials: true
 }))
 //add body parser middleware
