@@ -1,7 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router";
+import { useAuth } from "../store/authStore";
 
 function Header() {
+  const { currentUser, userAuthenticate, logout } = useAuth();
 
   const navStyles = ({ isActive }) =>
     `px-5 py-2 rounded-xl font-semibold transition-all duration-300
@@ -10,6 +12,13 @@ function Header() {
         ? "bg-blue-600 text-white shadow-lg"
         : "text-gray-700 hover:bg-blue-100 hover:text-blue-700"
     }`;
+
+  const dashboardPath =
+    currentUser?.role === "AUTHOR"
+      ? "/author-dashboard"
+      : currentUser?.role === "ADMIN"
+      ? "/admin-dashboard"
+      : "/user-dashboard";
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -30,17 +39,47 @@ function Header() {
             </NavLink>
           </li>
 
-          <li>
-            <NavLink to="/register" className={navStyles}>
-              Register
-            </NavLink>
-          </li>
+          {userAuthenticate && currentUser ? (
+            <>
+              <li>
+                <NavLink to={dashboardPath} className={navStyles}>
+                  Dashboard
+                </NavLink>
+              </li>
 
-          <li>
-            <NavLink to="/login" className={navStyles}>
-              Login
-            </NavLink>
-          </li>
+              {currentUser.role === "AUTHOR" && (
+                <li>
+                  <NavLink to="/add-article" className={navStyles}>
+                    Add Article
+                  </NavLink>
+                </li>
+              )}
+
+              <li>
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="px-5 py-2 rounded-xl font-semibold text-gray-700 hover:bg-red-100 hover:text-red-700 transition-all duration-300"
+                >
+                  Logout
+                </button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <NavLink to="/register" className={navStyles}>
+                  Register
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink to="/login" className={navStyles}>
+                  Login
+                </NavLink>
+              </li>
+            </>
+          )}
         </ul>
 
       </nav>
