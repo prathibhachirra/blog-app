@@ -84,6 +84,16 @@ authorRoute.post("/articles",verifyToken("AUTHOR"),async(req,res)=>{
     return res.status(201).json({message:"Article created",payload:createdArticleDoc})
 })
 
+//get single article by id
+authorRoute.get("/articles/by-id/:id",async(req,res)=>{
+    const id = req.params.id
+    const article = await ArticleModel.findById(id)
+      .populate("author","firstName lastName email")
+      .populate("comments.user","firstName lastName email")
+    if(!article) return res.status(404).json({ message: "Article not found" })
+    res.status(200).json({message:"article",payload:article})
+})
+
 //read articles of author(protected)
 authorRoute.get("/articles/:authorId",verifyToken("AUTHOR"),async(req,res)=>{
     //get author id
@@ -104,18 +114,6 @@ authorRoute.get("/articles",async(req,res)=>{
     //send res
     res.status(200).json({message:"articles",payload:articles})
 })
-
-//get single article by id
-authorRoute.get("/articles/:id",async(req,res)=>{
-    const id = req.params.id
-    const article = await ArticleModel.findById(id)
-      .populate("author","firstName lastName email")
-      .populate("comments.user","firstName lastName email")
-    if(!article) return res.status(404).json({ message: "Article not found" })
-    res.status(200).json({message:"article",payload:article})
-})
-
-
 
 //edit article(protected route)
 authorRoute.put("/articles", verifyToken("AUTHOR"), async (req, res) => {

@@ -32,7 +32,7 @@ function ArticlePage() {
       try {
 
         const res = await axios.get(
-          `${BACKEND_URL}/author-api/articles/${id}`,
+          `${BACKEND_URL}/author-api/articles/by-id/${id}`,
           { withCredentials: true }
         );
 
@@ -137,6 +137,15 @@ function ArticlePage() {
   const getCommentUserName = (user) => {
 
     if (!user) return "User";
+
+    if (typeof user === "string" && user === currentUser?._id) {
+
+      const currentUserName = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(" ");
+
+      return currentUserName || currentUser.email || "User";
+    }
+
+    if (typeof user === "string") return "User";
 
     const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ");
 

@@ -1,15 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { primaryBtn,secondaryBtn } from '../styles/common'
+import { primaryBtn } from '../styles/common'
 import axios from 'axios'
 import { useAuth } from '../store/authStore'
 import { useNavigate } from 'react-router'
-import { toast } from 'react-hot-toast'
 
 function AuthorDashboard() {
 
    const currentUser = useAuth((state)=>state.currentUser)
-
-   const logout = useAuth((state)=>state.logout)
 
    const navigate = useNavigate()
 
@@ -63,15 +60,6 @@ function AuthorDashboard() {
     navigate(`/article/${artObj._id}`, { state: artObj })
   }
 
-  const onLogout = async () => {
-
-    await logout()
-
-    toast.success("Logged out successfully")
-
-    navigate("/login")
-  }
-
   return (
 
     <div className="min-h-screen bg-slate-50 px-5 py-8">
@@ -97,11 +85,7 @@ function AuthorDashboard() {
         </button>
 
         <button onClick={getArticles} className={primaryBtn}>
-          All Articles
-        </button>
-
-        <button onClick={onLogout} className={secondaryBtn}>
-          Logout
+          Refresh Articles
         </button>
 
         </div>

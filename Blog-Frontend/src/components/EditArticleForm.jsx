@@ -46,7 +46,7 @@ function EditArticle() {
         }
 
         const res = await axios.get(
-          `${BACKEND_URL}/author-api/articles/${id}`,
+          `${BACKEND_URL}/author-api/articles/by-id/${id}`,
           { withCredentials: true }
         );
 
@@ -78,7 +78,7 @@ function EditArticle() {
 
     loadArticle();
 
-  }, [article, id, setValue]);
+  }, [BACKEND_URL, article, id, setValue]);
 
   // Update article
   const updateArticle = async (data) => {
