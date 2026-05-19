@@ -1,12 +1,9 @@
 import { useAuth } from "../store/authStore";
 import { useNavigate } from "react-router";
-import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
 function UserProfile() {
-
-  const logout = useAuth((state) => state.logout);
 
   const currentUser = useAuth((state) => state.currentUser);
 
@@ -47,7 +44,7 @@ function UserProfile() {
 
     getArticles();
 
-  }, []);
+  }, [BACKEND_URL]);
 
   // convert UTC → IST
   const formatDateIST = (date) => {
@@ -57,15 +54,6 @@ function UserProfile() {
       dateStyle: "medium",
       timeStyle: "short",
     });
-  };
-
-  const onLogout = async () => {
-
-    await logout();
-
-    toast.success("Logged out successfully");
-
-    navigate("/login");
   };
 
   const navigateToArticleByID = (articleObj) => {
@@ -95,9 +83,9 @@ function UserProfile() {
       )}
 
       {/* Top Section */}
-      <div className="max-w-7xl mx-auto flex justify-between items-center mb-10 bg-white shadow-lg rounded-3xl p-6">
+      <div className="mx-auto mb-10 flex max-w-7xl flex-col justify-between gap-4 rounded-3xl bg-white p-6 shadow-lg sm:flex-row sm:items-center">
 
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center gap-4">
 
           <img
             src={currentUser?.ProfileImageUrl}
@@ -105,26 +93,19 @@ function UserProfile() {
             alt=""
           />
 
-          <div>
+          <div className="min-w-0">
 
-            <p className="text-2xl font-bold text-gray-800">
+            <p className="safe-text text-2xl font-bold text-gray-800">
               Welcome, {currentUser?.firstName}
             </p>
 
-            <p className="text-gray-500">
+            <p className="safe-text text-gray-500">
               Explore the latest articles
             </p>
 
           </div>
 
         </div>
-
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-2xl transition duration-300"
-          onClick={onLogout}
-        >
-          Logout
-        </button>
 
       </div>
 
@@ -134,22 +115,22 @@ function UserProfile() {
         {articles.map((articleObj) => (
 
           <div
-            className="bg-white rounded-3xl shadow-xl p-6 flex flex-col hover:scale-105 transition duration-300"
+            className="flex min-w-0 flex-col overflow-hidden rounded-3xl bg-white p-6 shadow-xl transition duration-300 hover:scale-[1.02]"
             key={articleObj._id}
           >
 
             {/* Category */}
-            <p className="text-blue-500 font-bold uppercase mb-3">
+            <p className="safe-text text-blue-500 font-bold uppercase mb-3">
               {articleObj.category}
             </p>
 
             {/* Title */}
-            <h2 className="text-2xl font-extrabold text-gray-800 mb-4">
+            <h2 className="safe-text text-2xl font-extrabold text-gray-800 mb-4">
               {articleObj.title}
             </h2>
 
             {/* Content */}
-            <p className="text-gray-600 leading-7 mb-6">
+            <p className="safe-text text-gray-600 leading-7 mb-6">
               {articleObj.content.slice(0, 100)}...
             </p>
 

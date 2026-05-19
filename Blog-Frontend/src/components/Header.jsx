@@ -1,16 +1,17 @@
 import React from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "../store/authStore";
 
 function Header() {
   const { currentUser, userAuthenticate, logout } = useAuth();
+  const navigate = useNavigate();
 
   const navStyles = ({ isActive }) =>
-    `px-5 py-2 rounded-xl font-semibold transition-all duration-300
+    `px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300
     ${
       isActive
-        ? "bg-blue-600 text-white shadow-lg"
-        : "text-gray-700 hover:bg-blue-100 hover:text-blue-700"
+        ? "bg-blue-600 text-white shadow-sm"
+        : "text-gray-600 hover:bg-blue-50 hover:text-blue-700"
     }`;
 
   const dashboardPath =
@@ -20,46 +21,66 @@ function Header() {
       ? "/admin-dashboard"
       : "/user-dashboard";
 
+  const dashboardLabel =
+    currentUser?.role === "AUTHOR"
+      ? "My Articles"
+      : currentUser?.role === "ADMIN"
+      ? "Dashboard"
+      : "Articles";
+
+  const handleLogout = async () => {
+
+    await logout();
+
+    navigate("/login");
+  };
+
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto flex items-center justify-between px-8 py-4">
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+      <nav className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between lg:px-8">
 
         {/* Logo */}
-        <div>
-          <h1 className="text-3xl font-bold text-blue-700 tracking-wide">
+        <NavLink to={userAuthenticate ? dashboardPath : "/home"}>
+          <h1 className="text-2xl font-bold tracking-wide text-blue-700">
             My Blog
           </h1>
-        </div>
+        </NavLink>
 
         {/* Nav Links */}
-        <ul className="flex items-center gap-5">
+        <ul className="flex flex-wrap items-center gap-2 sm:justify-end">
+          {!userAuthenticate && (
           <li>
             <NavLink to="/home" className={navStyles}>
               Home
             </NavLink>
           </li>
+          )}
 
           {userAuthenticate && currentUser ? (
             <>
               <li>
                 <NavLink to={dashboardPath} className={navStyles}>
-                  Dashboard
+                  {dashboardLabel}
                 </NavLink>
               </li>
 
               {currentUser.role === "AUTHOR" && (
                 <li>
                   <NavLink to="/add-article" className={navStyles}>
-                    Add Article
+                    Write
                   </NavLink>
                 </li>
               )}
 
+              <li className="hidden text-sm font-medium text-slate-500 sm:block">
+                {currentUser.firstName}
+              </li>
+
               <li>
                 <button
                   type="button"
-                  onClick={logout}
-                  className="px-5 py-2 rounded-xl font-semibold text-gray-700 hover:bg-red-100 hover:text-red-700 transition-all duration-300"
+                  onClick={handleLogout}
+                  className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 transition-all duration-300 hover:bg-red-50 hover:text-red-700"
                 >
                   Logout
                 </button>

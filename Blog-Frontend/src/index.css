@@ -1,1 +1,18 @@
-@import "tailwindcss"
+@import "tailwindcss";
+
+#root {
+  overflow-x: hidden;
+}
+
+:where(h1, h2, h3, h4, h5, h6, p, li, span, article, div) {
+  min-width: 0;
+}
+
+:where(h1, h2, h3, h4, h5, h6, p, li, .safe-text) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+:where(input, textarea, select) {
+  max-width: 100%;
+}

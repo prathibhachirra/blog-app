@@ -48,7 +48,7 @@ function AuthorArticles() {
 
     getAuthorArticles();
 
-  }, [user]);
+  }, [BACKEND_URL, user]);
 
   const openArticle = (article) => {
 
@@ -119,13 +119,13 @@ function AuthorArticles() {
 
     <div className="min-h-screen bg-white py-10 px-5">
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 
         {articles.map((article) => (
 
           <div
             key={article._id}
-            className="bg-blue-400 rounded-3xl shadow-2xl p-6 flex flex-col"
+            className="flex min-w-0 flex-col overflow-hidden rounded-3xl bg-blue-400 p-6 shadow-2xl"
           >
 
             {/* Status */}
@@ -140,17 +140,17 @@ function AuthorArticles() {
             </span>
 
             {/* Category */}
-            <p className="text-white font-semibold mb-2 uppercase">
+            <p className="safe-text text-white font-semibold mb-2 uppercase">
               {article.category}
             </p>
 
             {/* Title */}
-            <h1 className="text-3xl font-bold text-white mb-4">
+            <h1 className="safe-text text-3xl font-bold text-white mb-4">
               {article.title}
             </h1>
 
             {/* Content */}
-            <p className="text-white leading-7 mb-6">
+            <p className="safe-text text-white leading-7 mb-6">
               {article.content.slice(0, 100)}...
             </p>
 
