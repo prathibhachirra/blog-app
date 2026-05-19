@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { useAuth } from '../store/authStore'
 import { useNavigate } from 'react-router'
+import { toast } from 'react-hot-toast'
 
 function AuthorDashboard() {
 
@@ -57,6 +58,36 @@ function AuthorDashboard() {
   const openArticle = (artObj) => {
 
     navigate(`/article/${artObj._id}`, { state: artObj })
+  }
+
+  const toggleArticleStatus = async (artObj) => {
+
+    const nextStatus = !artObj.isArticleActive
+
+    if (!nextStatus && !window.confirm("Soft delete this article?")) return
+
+    try {
+
+      const res = await axios.patch(
+        `${BACKEND_URL}/author-api/articles/${artObj._id}/status`,
+        { isArticleActive: nextStatus },
+        { withCredentials: true }
+      )
+
+      const updatedArticle = res.data.article
+
+      setArticles((prev) =>
+        prev.map((article) =>
+          article._id === artObj._id ? updatedArticle : article
+        )
+      )
+
+      toast.success(nextStatus ? "Article restored" : "Article soft deleted")
+
+    } catch (err) {
+
+      toast.error(err.response?.data?.message || "Could not update article")
+    }
   }
 
   return (
@@ -118,7 +149,9 @@ function AuthorDashboard() {
 
               <article
                 key={artObj._id}
-                className="min-w-0 flex min-h-72 flex-col overflow-hidden rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+                className={`min-w-0 flex min-h-72 flex-col overflow-hidden rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg ${
+                  artObj.isArticleActive ? "" : "opacity-75"
+                }`}
               >
 
                 <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-3">
@@ -145,12 +178,25 @@ function AuthorDashboard() {
                   {artObj.content}
                 </p>
 
-                <button
-                  className="mt-auto rounded-lg bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-blue-700"
-                  onClick={() => openArticle(artObj)}
-                >
-                  Read Article
-                </button>
+                <div className="mt-auto grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <button
+                    className="rounded-lg bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-blue-700"
+                    onClick={() => openArticle(artObj)}
+                  >
+                    Read
+                  </button>
+
+                  <button
+                    className={`rounded-lg px-4 py-3 text-sm font-semibold text-white transition duration-300 ${
+                      artObj.isArticleActive
+                        ? "bg-red-500 hover:bg-red-600"
+                        : "bg-green-500 hover:bg-green-600"
+                    }`}
+                    onClick={() => toggleArticleStatus(artObj)}
+                  >
+                    {artObj.isArticleActive ? "Delete" : "Restore"}
+                  </button>
+                </div>
                 
               </article>
             ))

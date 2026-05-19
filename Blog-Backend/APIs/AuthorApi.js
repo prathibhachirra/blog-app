@@ -102,8 +102,10 @@ authorRoute.get("/articles/:authorId",verifyToken("AUTHOR"),async(req,res)=>{
      const author=await UserTypeModel.findById(aid)
     // if(!author || author.role!=="AUTHOR")
     //     return res.status(401).json({message:"Invalid author"})
-    //read articles by this author which are active
-    const articles=await ArticleModel.find({author:aid,isArticleActive:true}).populate("author","firstName")
+    //read all articles by this author, including soft-deleted articles
+    const articles=await ArticleModel.find({author:aid})
+      .sort({updatedAt:-1})
+      .populate("author","firstName")
     //send res
     res.status(200).json({message:"articles",payload:articles})
 })

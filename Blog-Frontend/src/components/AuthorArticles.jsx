@@ -64,27 +64,31 @@ function AuthorArticles() {
     });
   };
 
-  const deleteArticle = async (articleId) => {
+  const toggleArticleStatus = async (article) => {
 
-    if (!window.confirm("Delete this article?")) return;
+    const nextStatus = !article.isArticleActive;
+
+    if (!nextStatus && !window.confirm("Soft delete this article?")) return;
 
     try {
 
-      await axios.patch(
-        `${BACKEND_URL}/author-api/articles/${articleId}/status`,
-        { isArticleActive: false },
+      const res = await axios.patch(
+        `${BACKEND_URL}/author-api/articles/${article._id}/status`,
+        { isArticleActive: nextStatus },
         { withCredentials: true }
       );
 
       setArticles((prev) =>
-        prev.filter((article) => article._id !== articleId)
+        prev.map((item) =>
+          item._id === article._id ? res.data.article : item
+        )
       );
 
     } catch (err) {
 
       console.error(err);
 
-      setError(err.response?.data?.error || "Delete failed");
+      setError(err.response?.data?.message || err.response?.data?.error || "Update failed");
     }
   };
 
@@ -173,9 +177,9 @@ function AuthorArticles() {
 
               <button
                 className="bg-red-500 text-white font-bold py-3 rounded-full hover:bg-red-600 transition duration-300"
-                onClick={() => deleteArticle(article._id)}
+                onClick={() => toggleArticleStatus(article)}
               >
-                Delete
+                {article.isArticleActive ? "Delete" : "Restore"}
               </button>
 
             </div>
