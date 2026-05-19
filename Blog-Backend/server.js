@@ -34,7 +34,7 @@ const connectDB=async()=>{
      await connect(process.env.mongodb)
      console.log("Database connection successful")
      //start htp server
-     app.listen(process.env.PORT,()=>{
+     app.listen(PORT,()=>{
         console.log("Server started")
      })}
      catch(err){
