@@ -4,17 +4,6 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-import {
-  articleGrid,
-  articleCardClass,
-  articleTitle,
-  articleBody,
-  ghostBtn,
-  loadingClass,
-  errorClass,
-  timestampClass,
-} from "../styles/common.js";
-
 function UserProfile() {
 
   const logout = useAuth((state) => state.logout);
@@ -89,42 +78,49 @@ function UserProfile() {
   if (loading) {
 
     return (
-      <p className={loadingClass}>
+      <p className="text-center text-2xl mt-20 text-blue-500">
         Loading articles...
       </p>
     );
   }
 
-  console.log(articles)
-
   return (
 
-    <div>
+    <div className="min-h-screen bg-gray-100 py-10 px-5">
 
       {error && (
-        <p className={errorClass}>
+        <p className="text-center text-red-500 text-xl mb-6">
           {error}
         </p>
       )}
 
-      <div className="text-end">
+      {/* Top Section */}
+      <div className="max-w-7xl mx-auto flex justify-between items-center mb-10 bg-white shadow-lg rounded-3xl p-6">
 
-        <p className="text-2xl">
-          Welcome,{currentUser?.firstName}
-        </p>
+        <div className="flex items-center gap-4">
 
-        <img
-          src={currentUser?.ProfileImageUrl}
-          className="w-14 mr-2 rounded-full block ms-auto"
-          alt=""
-        />
+          <img
+            src={currentUser?.ProfileImageUrl}
+            className="w-16 h-16 rounded-full object-cover border-4 border-blue-500"
+            alt=""
+          />
 
-      </div>
+          <div>
 
-      <div className="flex justify-end mb-6 mt-3">
+            <p className="text-2xl font-bold text-gray-800">
+              Welcome, {currentUser?.firstName}
+            </p>
+
+            <p className="text-gray-500">
+              Explore the latest articles
+            </p>
+
+          </div>
+
+        </div>
 
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-2xl transition duration-300"
           onClick={onLogout}
         >
           Logout
@@ -132,43 +128,43 @@ function UserProfile() {
 
       </div>
 
-      <div className={articleGrid}>
+      {/* Articles */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
         {articles.map((articleObj) => (
 
           <div
-            className={articleCardClass}
+            className="bg-white rounded-3xl shadow-xl p-6 flex flex-col hover:scale-105 transition duration-300"
             key={articleObj._id}
           >
 
-            <div className="flex flex-col h-full">
+            {/* Category */}
+            <p className="text-blue-500 font-bold uppercase mb-3">
+              {articleObj.category}
+            </p>
 
-              {/* Top Content */}
-              <div>
+            {/* Title */}
+            <h2 className="text-2xl font-extrabold text-gray-800 mb-4">
+              {articleObj.title}
+            </h2>
 
-                <p className={articleTitle}>
-                  {articleObj.title}
-                </p>
+            {/* Content */}
+            <p className="text-gray-600 leading-7 mb-6">
+              {articleObj.content.slice(0, 100)}...
+            </p>
 
-                <p>
-                  {articleObj.content.slice(0, 20)}...
-                </p>
+            {/* Date */}
+            <p className="text-sm text-gray-400 mb-6">
+              {formatDateIST(articleObj.createdAt)}
+            </p>
 
-                <p className={timestampClass}>
-                  {formatDateIST(articleObj.createdAt)}
-                </p>
-
-              </div>
-
-              {/* Button at bottom */}
-              <button
-                className={`${ghostBtn} mt-auto pt-4`}
-                onClick={() => navigateToArticleByID(articleObj)}
-              >
-                Read Article →
-              </button>
-
-            </div>
+            {/* Button */}
+            <button
+              className="mt-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-2xl transition duration-300"
+              onClick={() => navigateToArticleByID(articleObj)}
+            >
+              Read Article →
+            </button>
 
           </div>
         ))}
