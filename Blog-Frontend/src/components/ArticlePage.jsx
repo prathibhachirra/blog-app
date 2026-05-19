@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useAuth } from "../store/authStore";
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -10,11 +10,9 @@ function ArticlePage() {
 
   const currentUser = useAuth((state) => state.currentUser);
 
-  const location = useLocation();
-
   const navigate = useNavigate();
 
-  const [article, setArticle] = useState(location.state || null);
+  const [article, setArticle] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -26,8 +24,6 @@ function ArticlePage() {
 
   // Fetch article
   useEffect(() => {
-
-    if (article) return;
 
     const getArticle = async () => {
 
@@ -44,7 +40,7 @@ function ArticlePage() {
 
       } catch (err) {
 
-        setError(err.response?.data?.error || "Failed to load article");
+        setError(err.response?.data?.message || err.response?.data?.error || "Failed to load article");
 
       } finally {
 
@@ -54,7 +50,7 @@ function ArticlePage() {
 
     getArticle();
 
-  }, [id, article]);
+  }, [BACKEND_URL, id]);
 
   // Add Comment
   const addComment = async () => {
@@ -68,25 +64,24 @@ function ArticlePage() {
         return;
       }
 
-      const res = await axios.post(
-        `${BACKEND_URL}/author-api/articles/${id}/comments`,
+      if (currentUser?.role !== "USER") {
+
+        toast.error("Only users can add comments");
+
+        return;
+      }
+
+      const res = await axios.put(
+        `${BACKEND_URL}/user-api/articles`,
         {
           comment,
-          userId: currentUser?._id,
+          articleId: id,
+          user: currentUser?._id,
         },
         { withCredentials: true }
       );
 
-      const updatedArticle = res.data.payload || {
-        ...article,
-        comments: [
-          ...(article.comments || []),
-          {
-            comment,
-            user: currentUser,
-          },
-        ],
-      };
+      const updatedArticle = res.data.payload;
 
       setArticle(updatedArticle);
 
@@ -98,7 +93,7 @@ function ArticlePage() {
 
       console.error(err);
 
-      toast.error(err.response?.data?.error || "Failed to add comment");
+      toast.error(err.response?.data?.message || err.response?.data?.error || "Failed to add comment");
     }
   };
 
@@ -137,6 +132,17 @@ function ArticlePage() {
       article.author._id === currentUser._id
     );
 
+  const canComment = currentUser?.role === "USER";
+
+  const getCommentUserName = (user) => {
+
+    if (!user) return "User";
+
+    const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ");
+
+    return fullName || user.email || "User";
+  };
+
   const toggleArticleActive = async (newStatus) => {
 
     try {
@@ -154,29 +160,29 @@ function ArticlePage() {
 
     } catch (err) {
 
-      setError(err.response?.data?.error || "Update failed");
+      setError(err.response?.data?.message || err.response?.data?.error || "Update failed");
     }
   };
 
   return (
 
-    <div className="min-h-screen bg-gray-100 py-10 px-5">
+    <div className="min-h-screen bg-gray-100 py-10 px-4 sm:px-5">
 
-      <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-10">
+      <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl bg-white p-5 shadow-xl sm:p-8 lg:p-10">
 
         {/* Top buttons */}
-        <div className="mb-8 flex items-center justify-between gap-3">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
           <button
             onClick={() => navigate(-1)}
             className="bg-blue-500 text-white px-5 py-2 rounded-full font-semibold hover:bg-blue-600 transition duration-300"
           >
-            ← Back
+            Back
           </button>
 
           {canEdit && (
 
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
 
               <button
                 onClick={() =>
@@ -206,41 +212,43 @@ function ArticlePage() {
         </div>
 
         {/* Article Content */}
-        <div className="bg-gray-50 rounded-3xl p-10 shadow-md border">
+        <div className="overflow-hidden rounded-2xl border bg-gray-50 p-5 shadow-md sm:p-8 lg:p-10">
 
-          <p className="text-blue-500 font-bold uppercase mb-3">
+          <p className="mb-3 break-words text-sm font-bold uppercase text-blue-500">
             {article.category}
           </p>
 
-          <h1 className="text-5xl font-extrabold text-gray-800 mb-6 leading-tight">
+          <h1 className="mb-6 break-words text-3xl font-extrabold leading-tight text-gray-800 sm:text-4xl lg:text-5xl">
             {article.title}
           </h1>
 
-          <p className="text-gray-700 leading-10 whitespace-pre-wrap text-lg">
+          <p className="whitespace-pre-wrap break-words text-base leading-8 text-gray-700 sm:text-lg sm:leading-10">
             {article.content}
           </p>
 
         </div>
 
         {/* Comment Input */}
-        <div className="mt-10 flex gap-3">
+        {canComment && (
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
 
           <input
             type="text"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Add a Comment"
-            className="bg-white border rounded-2xl px-5 py-3 w-full outline-none"
+            className="w-full rounded-2xl border bg-white px-5 py-3 outline-none"
           />
 
           <button
-            className="bg-blue-500 text-white font-bold px-6 py-3 rounded-2xl hover:bg-blue-600 transition duration-300"
+            className="rounded-2xl bg-blue-500 px-6 py-3 font-bold text-white transition duration-300 hover:bg-blue-600"
             onClick={addComment}
           >
             Add
           </button>
 
         </div>
+        )}
 
         {/* Comments */}
         <div className="mt-12">
@@ -255,14 +263,14 @@ function ArticlePage() {
 
               <div
                 key={index}
-                className="bg-white border p-5 rounded-2xl mb-4 shadow-sm"
+                className="mb-4 overflow-hidden rounded-2xl border bg-white p-5 shadow-sm"
               >
 
-                <p className="text-blue-500 font-bold mb-2 uppercase">
-                  {cmt.user?.username || "User"}
+                <p className="mb-2 break-words font-bold uppercase text-blue-500">
+                  {getCommentUserName(cmt.user)}
                 </p>
 
-                <p className="text-gray-700">
+                <p className="break-words text-gray-700">
                   {cmt.comment}
                 </p>
 

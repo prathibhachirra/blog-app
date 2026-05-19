@@ -108,7 +108,9 @@ authorRoute.get("/articles",async(req,res)=>{
 //get single article by id
 authorRoute.get("/articles/:id",async(req,res)=>{
     const id = req.params.id
-    const article = await ArticleModel.findById(id).populate("author","firstName lastName email")
+    const article = await ArticleModel.findById(id)
+      .populate("author","firstName lastName email")
+      .populate("comments.user","firstName lastName email")
     if(!article) return res.status(404).json({ message: "Article not found" })
     res.status(200).json({message:"article",payload:article})
 })

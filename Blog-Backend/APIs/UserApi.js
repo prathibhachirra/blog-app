@@ -73,7 +73,7 @@ userRoute.get("/users",async(req,res)=>{
 
 //read all articles(protected route)
 userRoute.get("/articles",verifyToken("USER"),async(req,res)=>{
-    let articles=await ArticleModel.find({isArticleActive:true}).populate("comments.user","email firstName")
+    let articles=await ArticleModel.find({isArticleActive:true}).populate("comments.user","email firstName lastName")
     return res.status(200).json({message:"All articles",payload:articles})
 })
 
@@ -88,11 +88,11 @@ userRoute.put("/articles",verifyToken("USER"),async(req,res)=>{
     }
     //find articleby id and update
 
-    let articleWithComment = await ArticleModel.findByIdAndUpdate(
-        {articleId,isArticleActive:true},
+    let articleWithComment = await ArticleModel.findOneAndUpdate(
+        {_id:articleId,isArticleActive:true},
         { $push: { comments: {user,comment} } },
-        { new: true ,runValidators:true}.populate("comments.user","email firstName")
-    )
+        { new: true ,runValidators:true}
+    ).populate("comments.user","email firstName lastName")
     //if article not found
     if(!articleWithComment){
         return res.status(404).json({message:"Article not found"})
