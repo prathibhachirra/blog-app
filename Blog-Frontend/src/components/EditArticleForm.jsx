@@ -4,16 +4,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-import {
-  formCard,
-  formTitle,
-  formGroup,
-  labelClass,
-  inputClass,
-  submitBtn,
-  errorClass,
-} from "../styles/common";
-
 function EditArticle() {
 
   const location = useLocation();
@@ -136,113 +126,119 @@ function EditArticle() {
 
   return (
 
-    <div className={`${formCard} mt-10`}>
+    <div className="min-h-screen bg-gray-100 flex justify-center items-center py-10 px-5">
 
-      <h2 className={formTitle}>
-        Edit Article
-      </h2>
+      <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-4xl">
 
-      {loading ? (
+        <h2 className="text-4xl font-extrabold text-blue-500 text-center mb-10">
+          Edit Article
+        </h2>
 
-        <p>Loading article...</p>
+        {loading ? (
 
-      ) : (
+          <p className="text-center text-xl text-blue-500">
+            Loading article...
+          </p>
 
-        <form onSubmit={handleSubmit(updateArticle)}>
+        ) : (
 
-          {/* Title */}
-          <div className={formGroup}>
+          <form onSubmit={handleSubmit(updateArticle)}>
 
-            <label className={labelClass}>
-              Title
-            </label>
+            {/* Title */}
+            <div className="mb-6">
 
-            <input
-              className={inputClass}
-              {...register("title", { required: "Title required" })}
-            />
+              <label className="block text-lg font-semibold text-gray-700 mb-2">
+                Title
+              </label>
 
-            {errors.title && (
-              <p className={errorClass}>
-                {errors.title.message}
-              </p>
-            )}
+              <input
+                className="w-full border border-gray-300 rounded-2xl p-4 outline-none focus:border-blue-500"
+                {...register("title", { required: "Title required" })}
+              />
 
-          </div>
+              {errors.title && (
+                <p className="text-red-500 mt-2">
+                  {errors.title.message}
+                </p>
+              )}
 
-          {/* Category */}
-          <div className={formGroup}>
+            </div>
 
-            <label className={labelClass}>
-              Category
-            </label>
+            {/* Category */}
+            <div className="mb-6">
 
-            <select
-              className={inputClass}
-              {...register("category", { required: "Category required" })}
+              <label className="block text-lg font-semibold text-gray-700 mb-2">
+                Category
+              </label>
+
+              <select
+                className="w-full border border-gray-300 rounded-2xl p-4 outline-none focus:border-blue-500"
+                {...register("category", { required: "Category required" })}
+              >
+
+                <option value="">
+                  Select category
+                </option>
+
+                <option value="technology">
+                  Technology
+                </option>
+
+                <option value="programming">
+                  Programming
+                </option>
+
+                <option value="ai">
+                  AI
+                </option>
+
+                <option value="web-development">
+                  Web Development
+                </option>
+
+              </select>
+
+              {errors.category && (
+                <p className="text-red-500 mt-2">
+                  {errors.category.message}
+                </p>
+              )}
+
+            </div>
+
+            {/* Content */}
+            <div className="mb-8">
+
+              <label className="block text-lg font-semibold text-gray-700 mb-2">
+                Content
+              </label>
+
+              <textarea
+                rows="14"
+                className="w-full border border-gray-300 rounded-2xl p-4 outline-none focus:border-blue-500"
+                {...register("content", { required: "Content required" })}
+              />
+
+              {errors.content && (
+                <p className="text-red-500 mt-2">
+                  {errors.content.message}
+                </p>
+              )}
+
+            </div>
+
+            <button
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 rounded-2xl transition duration-300"
+              disabled={loading || !article}
             >
+              {loading ? "Loading..." : "Update Article"}
+            </button>
 
-              <option value="">
-                Select category
-              </option>
+          </form>
+        )}
 
-              <option value="technology">
-                Technology
-              </option>
+      </div>
 
-              <option value="programming">
-                Programming
-              </option>
-
-              <option value="ai">
-                AI
-              </option>
-
-              <option value="web-development">
-                Web Development
-              </option>
-
-            </select>
-
-            {errors.category && (
-              <p className={errorClass}>
-                {errors.category.message}
-              </p>
-            )}
-
-          </div>
-
-          {/* Content */}
-          <div className={formGroup}>
-
-            <label className={labelClass}>
-              Content
-            </label>
-
-            <textarea
-              rows="14"
-              className={inputClass}
-              {...register("content", { required: "Content required" })}
-            />
-
-            {errors.content && (
-              <p className={errorClass}>
-                {errors.content.message}
-              </p>
-            )}
-
-          </div>
-
-          <button
-            className={submitBtn}
-            disabled={loading || !article}
-          >
-            {loading ? "Loading..." : "Update Article"}
-          </button>
-
-        </form>
-      )}
-      
     </div>
   );
 }

@@ -62,7 +62,9 @@ function ArticlePage() {
     try {
 
       if (!comment.trim()) {
+
         toast.error("Comment cannot be empty");
+
         return;
       }
 
@@ -101,6 +103,7 @@ function ArticlePage() {
   };
 
   if (loading) {
+
     return (
       <p className="text-center text-2xl mt-20 text-blue-500">
         Loading article...
@@ -109,6 +112,7 @@ function ArticlePage() {
   }
 
   if (error) {
+
     return (
       <p className="text-center text-2xl mt-20 text-red-500">
         {error}
@@ -117,6 +121,7 @@ function ArticlePage() {
   }
 
   if (!article) {
+
     return (
       <p className="text-center text-2xl mt-20 text-red-500">
         Article not found.
@@ -155,16 +160,16 @@ function ArticlePage() {
 
   return (
 
-    <div className="min-h-screen bg-white py-10 px-5">
+    <div className="min-h-screen bg-gray-100 py-10 px-5">
 
-      <div className="max-w-4xl mx-auto bg-blue-400 rounded-3xl shadow-2xl p-10">
+      <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-10">
 
         {/* Top buttons */}
-        <div className="mb-6 flex items-center justify-between gap-3">
+        <div className="mb-8 flex items-center justify-between gap-3">
 
           <button
             onClick={() => navigate(-1)}
-            className="bg-white text-blue-500 px-5 py-2 rounded-full font-semibold hover:bg-gray-100 transition duration-300"
+            className="bg-blue-500 text-white px-5 py-2 rounded-full font-semibold hover:bg-blue-600 transition duration-300"
           >
             ← Back
           </button>
@@ -177,7 +182,7 @@ function ArticlePage() {
                 onClick={() =>
                   navigate(`/article/${id}/edit`, { state: article })
                 }
-                className="bg-white text-blue-500 px-5 py-2 rounded-full font-semibold hover:bg-gray-100 transition duration-300"
+                className="bg-yellow-400 text-white px-5 py-2 rounded-full font-semibold hover:bg-yellow-500 transition duration-300"
               >
                 Edit
               </button>
@@ -201,35 +206,35 @@ function ArticlePage() {
         </div>
 
         {/* Article Content */}
-        <div className="bg-white rounded-2xl p-8 shadow-lg">
+        <div className="bg-gray-50 rounded-3xl p-10 shadow-md border">
 
-          <h1 className="text-5xl font-extrabold text-blue-500 mb-4 uppercase">
+          <p className="text-blue-500 font-bold uppercase mb-3">
+            {article.category}
+          </p>
+
+          <h1 className="text-5xl font-extrabold text-gray-800 mb-6 leading-tight">
             {article.title}
           </h1>
 
-          <p className="text-sm text-gray-500 mb-6 font-semibold">
-            Category : {article.category}
-          </p>
-
-          <p className="leading-9 whitespace-pre-wrap text-gray-700 text-lg">
+          <p className="text-gray-700 leading-10 whitespace-pre-wrap text-lg">
             {article.content}
           </p>
 
         </div>
 
         {/* Comment Input */}
-        <div className="mt-8 flex gap-3">
+        <div className="mt-10 flex gap-3">
 
           <input
             type="text"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Add a Comment"
-            className="bg-white rounded-2xl px-5 py-3 w-full outline-none"
+            className="bg-white border rounded-2xl px-5 py-3 w-full outline-none"
           />
 
           <button
-            className="bg-white text-blue-500 font-bold px-6 py-3 rounded-2xl hover:bg-gray-100 transition duration-300"
+            className="bg-blue-500 text-white font-bold px-6 py-3 rounded-2xl hover:bg-blue-600 transition duration-300"
             onClick={addComment}
           >
             Add
@@ -238,9 +243,9 @@ function ArticlePage() {
         </div>
 
         {/* Comments */}
-        <div className="mt-10">
+        <div className="mt-12">
 
-          <h3 className="text-3xl font-bold text-white mb-5">
+          <h3 className="text-3xl font-bold text-gray-800 mb-6">
             Comments
           </h3>
 
@@ -250,7 +255,7 @@ function ArticlePage() {
 
               <div
                 key={index}
-                className="bg-white p-5 rounded-2xl mb-4 shadow-md"
+                className="bg-white border p-5 rounded-2xl mb-4 shadow-sm"
               >
 
                 <p className="text-blue-500 font-bold mb-2 uppercase">
@@ -266,7 +271,7 @@ function ArticlePage() {
 
           ) : (
 
-            <p className="text-white text-lg">
+            <p className="text-gray-500 text-lg">
               No comments yet
             </p>
           )}

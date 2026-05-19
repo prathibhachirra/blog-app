@@ -15,9 +15,9 @@ const app=exp()  //exported by express module
 const PORT=process.env.PORT||5000
 //use cors middleware
 app.use(cors({
-  origin: "https://capstone-project-seven-sage.vercel.app",
+  origin: 'https://capstone-project-seven-sage.vercel.app', // Your actual Vercel URL
   credentials: true
-}))
+}));
 //add body parser middleware
 app.use(exp.json())
 //add cookie parser middleware
