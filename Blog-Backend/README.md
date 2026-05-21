@@ -1,121 +1,177 @@
-BlogApp Backend
----------------
+# Blog App Backend
 
-•This is the backend part of BlogApp developed using Node.js, Express.js and MongoDB.
-•Backend handles authentication, database operations, REST APIs, blog management and file uploads.
+Express and MongoDB backend for the Blog App capstone project. It handles authentication, role-based API access, article management, comments, profile image uploads, and admin user controls.
 
-1. Generate package.json
-npm init -y
-Add "type":"module" in package.json for using import/export syntax.
+## Features
 
-2. Create server.js
-server.js is the entry point of backend application.
+- Register users and authors
+- Login and logout with JWT stored in an HTTP-only cookie
+- Role-based protected routes for `USER`, `AUTHOR`, and `ADMIN`
+- Create, read, update, soft-delete, and restore articles
+- Add comments to active articles
+- Upload profile images to Cloudinary
+- Block and unblock users from the admin API
+- MongoDB schemas with Mongoose validation
 
-3. Install Express and Create HTTP Server
-npm i express
+## Tech Stack
 
-Express is used to create server and REST APIs.
+- Node.js
+- Express 5
+- MongoDB
+- Mongoose
+- JSON Web Token
+- bcryptjs
+- Multer
+- Cloudinary
+- cookie-parser
+- CORS
+- dotenv
 
-4. Create .gitignore File
+## Folder Structure
 
-Used to ignore unnecessary files like:
-node_modules/
-.env
-
-5. Create .env File
-Used to store sensitive data securely.
-
-Example:
-PORT=5000
-MONGO_URI=your_mongodb_url
-JWT_SECRET=your_secret_key
-
-•Install dotenv:
-npm i dotenv
-Sensitive data should not be pushed to GitHub repository.
-
-•Connect MongoDB Database
-MongoDB Connection Flow
-REST API → Mongoose (ODM Tool) → MongoDB Server
-
-•Mongoose is an ODM tool used for:
-
-Schema Design
-Validation
-Database Operations
-
-•Steps
-a. Install Mongoose
-npm i mongoose
-b. Create Schema
-Schema acts as blueprint of document and validates request data.
-c. Create Model
-Model is created using schema.
-d. Perform Database Operations
-Operations performed:
-Insert Data
-Update Data
-Delete Data
-Fetch Data
-Middlewares Used
-Express JSON Middleware
-Error Handling Middleware
-JWT Verification Middleware
-
-•Middleware works between request and response.
-
-•Authentication
-JWT Authentication is implemented for protected routes.
-
-Features:
-User Login
-Token Generation
-Token Verification
-Protected Routes
-
-•Public routes do not require token verification.
-
-REST APIs
---------
-
-•REST APIs are created for:
-
-User Registration
-Login
-Blog CRUD Operations
-Comments
-File Uploads
-
-•Multer and Cloudinary are used for image uploads.
-
-Flow:
-
-Client → Backend → Cloudinary → Database
-
-•Only image URLs are stored in MongoDB.
-
-•Project Structure
+```text
 Blog-Backend/
-│
-├── APIs/
-├── config/
-├── middlewares/
-├── models/
-├── services/
-│
-├── .gitignore
-├── README.md
-├── package.json
-├── package-lock.json
-├── req.http
-└── server.js
+|-- APIs/
+|   |-- AdminApi.js
+|   |-- AuthorApi.js
+|   |-- CommonApi.js
+|   `-- UserApi.js
+|-- config/
+|   |-- cloudinary.js
+|   |-- cloudinaryUpload.js
+|   `-- multer.js
+|-- middlewares/
+|   |-- checkAuthor.js
+|   `-- verifyToken.js
+|-- models/
+|   |-- ArticleModel.js
+|   `-- UserTypeModel.js
+|-- services/
+|   `-- authservice.js
+|-- package.json
+|-- req.http
+|-- server.js
+`-- README.md
+```
 
+## Prerequisites
 
-•Install dependencies:
+- Node.js 18 or later
+- npm
+- MongoDB database connection string
+- Cloudinary account for image uploads
+
+## Environment Variables
+
+Create a `.env` file inside `Blog-Backend`:
+
+```env
+PORT=5000
+mongodb=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+CLOUD_NAME=your_cloudinary_cloud_name
+API_KEY=your_cloudinary_api_key
+API_SECRET=your_cloudinary_api_secret
+```
+
+Keep `.env` private and do not commit it to GitHub.
+
+## Installation
+
+```bash
 npm install
+```
 
-•Run Backend Server
-npm run dev
+## Run Locally
 
-•Server runs on:
+```bash
+npm start
+```
+
+The server runs at:
+
+```text
 http://localhost:5000
+```
+
+## API Overview
+
+### Common API
+
+Base path: `/common-api`
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/login` | Login user, author, or admin |
+| `GET` | `/logout` | Clear auth cookie |
+| `PUT` | `/passwordChange` | Change password for an authenticated user |
+| `GET` | `/check-auth` | Verify logged-in user from cookie |
+
+### User API
+
+Base path: `/user-api`
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/users` | Register a new user |
+| `GET` | `/users` | Get active users |
+| `GET` | `/articles` | Get active articles, protected for `USER` |
+| `PUT` | `/articles` | Add a comment to an article, protected for `USER` |
+
+### Author API
+
+Base path: `/author-api`
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/users` | Register a new author |
+| `POST` | `/articles` | Create an article, protected for `AUTHOR` |
+| `GET` | `/articles/by-id/:id` | Get one article by id |
+| `GET` | `/articles/:authorId` | Get articles written by an author |
+| `GET` | `/articles` | Get all articles |
+| `PUT` | `/articles` | Edit an article, protected for `AUTHOR` |
+| `PATCH` | `/articles/:id/status` | Soft-delete or restore an article |
+
+### Admin API
+
+Base path: `/admin-api`
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `PUT` | `/blockUsers/:uid` | Block a user |
+| `PUT` | `/UnblockUsers/:uid` | Unblock a user |
+
+## Data Models
+
+### User
+
+- `firstName`
+- `lastName`
+- `email`
+- `password`
+- `ProfileImageUrl`
+- `role`: `USER`, `AUTHOR`, or `ADMIN`
+- `isActive`
+
+### Article
+
+- `author`
+- `title`
+- `category`
+- `content`
+- `comments`
+- `isArticleActive`
+- timestamps
+
+## CORS
+
+The backend currently allows requests from the deployed frontend URL configured in `server.js`. For local frontend development, update the CORS origin to include `http://localhost:5173` or use an environment-based CORS configuration.
+
+## Deployment
+
+1. Add all environment variables to the backend hosting platform.
+2. Set the frontend URL in CORS.
+3. Run `npm install`.
+4. Start the server with `npm start`.
+
+Render, Railway, or similar Node.js hosting platforms can run this backend.

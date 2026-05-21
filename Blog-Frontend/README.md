@@ -1,16 +1,139 @@
-# React + Vite
+# Blog App Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React frontend for the Blog App capstone project. It provides role-based dashboards for users, authors, and admins, and connects to the Express backend through REST APIs.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- User and author registration with profile image upload
+- Login and logout using backend authentication cookies
+- Protected routes for user and author dashboards
+- User dashboard for reading articles and adding comments
+- Author dashboard for creating, editing, deleting, and restoring articles
+- Admin dashboard route for administration features
+- Toast notifications and error boundary handling
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- Vite
+- React Router
+- Zustand
+- Axios
+- React Hook Form
+- React Hot Toast
+- Tailwind CSS
+- ESLint
 
-## Expanding the ESLint configuration
+## Folder Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```text
+Blog-Frontend/
+|-- public/
+|-- src/
+|   |-- assets/
+|   |-- components/
+|   |-- store/
+|   |-- styles/
+|   |-- App.jsx
+|   |-- App.css
+|   |-- index.css
+|   `-- main.jsx
+|-- eslint.config.js
+|-- index.html
+|-- package.json
+|-- vite.config.js
+`-- README.md
+```
+
+## Prerequisites
+
+- Node.js 18 or later
+- npm
+- Running Blog App backend
+
+## Environment Variables
+
+Create a `.env` file inside `Blog-Frontend`:
+
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+For production, set `VITE_API_URL` to the deployed backend URL.
+
+## Installation
+
+```bash
+npm install
+```
+
+## Run Locally
+
+```bash
+npm run dev
+```
+
+The Vite development server usually runs at:
+
+```text
+http://localhost:5173
+```
+
+## Available Scripts
+
+```bash
+npm run dev
+```
+
+Starts the frontend development server.
+
+```bash
+npm run build
+```
+
+Creates a production build.
+
+```bash
+npm run preview
+```
+
+Serves the production build locally.
+
+```bash
+npm run lint
+```
+
+Runs ESLint checks.
+
+## Main Routes
+
+| Route | Description |
+| --- | --- |
+| `/home` | Public home page |
+| `/register` | Register as user or author |
+| `/login` | Login page |
+| `/user-dashboard` | User-only article dashboard |
+| `/author-dashboard` | Author-only article dashboard |
+| `/add-article` | Author-only create article page |
+| `/admin-dashboard` | Admin dashboard |
+| `/article/:id` | Article details page |
+| `/article/:id/edit` | Author-only edit article page |
+| `/unauthorized` | Unauthorized access page |
+
+## Backend Connection
+
+All API requests use:
+
+```js
+import.meta.env.VITE_API_URL
+```
+
+Make sure the backend is running and CORS is configured to allow the frontend origin.
+
+## Deployment
+
+1. Set `VITE_API_URL` in the hosting platform.
+2. Run `npm run build`.
+3. Deploy the generated `dist/` folder.
+
+Vercel or Netlify are good options for this frontend.
